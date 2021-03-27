@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["createMany"]
+}
+
+model User {
+  id         String    @unique @default(uuid())
+  username   String    @unique @db.Citext
+  email      String    @unique @db.Citext
+  password   String
+  created_at DateTime  @default(now()) @map("created_at")
+  role       UserRole? @default(USER)
+
+  lists List[] @relation("user-lists")
+  @@map(name: "users")
+}
+
+model List {
+  id     String  @unique @default(uuid())
+  name   String
+  emails Email[] @relation("email-lists")
+  User   User?   @relation("user-lists", fields: [userId], references: [id])
+  userId String?
+}
+
+model Email {
+  id       String  @unique @default(uuid())
+  address  String
+  response Json?
+  list     List?   @relation("email-lists", fields: [listId], references: [id])
+  listId   String?
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
