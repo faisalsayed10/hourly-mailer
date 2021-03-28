@@ -10,9 +10,13 @@ const ListShell: React.FC = ({ children }) => {
   const router = useRouter();
 
   const logout = async () => {
-    await axios.post("/api/logout");
-    mutateUser(null);
-    router.push("/login");
+    try {
+      await axios.post("/api/logout");
+      mutateUser(null);
+      router.push("/login");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (

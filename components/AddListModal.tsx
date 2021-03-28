@@ -1,3 +1,4 @@
+import { List } from ".prisma/client";
 import { Button } from "@chakra-ui/button";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { useDisclosure } from "@chakra-ui/hooks";
@@ -16,7 +17,7 @@ import axios from "axios";
 import { useUser } from "hooks";
 import React from "react";
 import { useForm } from "react-hook-form";
-import useSWR, { mutate } from "swr";
+import { mutate } from "swr";
 
 interface Props {}
 
@@ -25,11 +26,10 @@ const AddListModal: React.FC<Props> = ({}) => {
   const toast = useToast();
   const { handleSubmit, register } = useForm();
   const { user } = useUser();
-  const { data } = useSWR("/api/list");
 
   const onCreate = async ({ name }) => {
     try {
-      const { data } = await axios.post("/api/list", { name });
+      const res = await axios.post("/api/list", { name });
       toast({
         title: "Success!",
         description: "List created",
@@ -37,14 +37,10 @@ const AddListModal: React.FC<Props> = ({}) => {
         duration: 5000,
         isClosable: true,
       });
-      // mutate(
-      //   ["/api/lists", user.id],
-      //   async (data) => ({ sites: [{ id, ...newSite }, ...data.sites] }),
-      //   false
-      // );
+      mutate(["/api/list", user?.id], async (data: List[]) => [...data, res.data], false);
       onClose();
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
   };
 

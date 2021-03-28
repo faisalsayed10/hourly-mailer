@@ -14,6 +14,7 @@ import { DeleteIcon } from "@chakra-ui/icons";
 import { mutate } from "swr";
 import { useUser } from "hooks";
 import axios from "axios";
+import { List } from ".prisma/client";
 
 interface Props {
   listId: string;
@@ -27,20 +28,17 @@ const RemoveListButton: React.FC<Props> = ({ listId, children }) => {
   const { user } = useUser();
 
   const onDelete = async () => {
-    await axios.delete(`/api/list/${listId}`);
-
-    // mutate(
-    //   ["/api/feedback", user.id],
-    //   async (data) => {
-    //     return {
-    //       feedback: data.feedback.filter(
-    //         (feedback) => feedback.id !== feedbackId
-    //       ),
-    //     };
-    //   },
-    //   false
-    // );
-    onClose();
+    try {
+      await axios.delete(`/api/list/${listId}`);
+      mutate(
+        ["/api/list", user?.id],
+        async (data: List[]) => data.filter((list) => list.id !== listId),
+        false
+      );
+      onClose();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (

@@ -25,28 +25,21 @@ const RemoveButton: React.FC<Props> = ({ listId, emailId }) => {
   const cancelRef = useRef();
   const { user } = useUser();
 
-  const onDelete = async () => {   
-    await axios.delete(`/api/list/${listId}/${emailId}`)
-
-    // mutate(
-    //   ["/api/feedback", user.id],
-    //   async (data) => {
-    //     return {
-    //       feedback: data.feedback.filter(
-    //         (feedback) => feedback.id !== feedbackId
-    //       ),
-    //     };
-    //   },
-    //   false
-    // );
-    onClose();
+  const onDelete = async () => {
+    try {
+      await axios.delete(`/api/list/${listId}/${emailId}`);
+      mutate(["/api/list", user?.id]);
+      onClose();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
     <>
       <IconButton
         aria-label="Delete Feedback"
-        icon={<DeleteIcon color='red.600' />}
+        icon={<DeleteIcon color="red.600" />}
         variant="ghost"
         onClick={() => setIsOpen(true)}
       />
@@ -79,6 +72,6 @@ const RemoveButton: React.FC<Props> = ({ listId, emailId }) => {
       </AlertDialog>
     </>
   );
-}
+};
 
 export default RemoveButton;

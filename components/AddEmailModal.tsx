@@ -16,7 +16,7 @@ import axios from "axios";
 import { useUser } from "hooks";
 import React from "react";
 import { useForm } from "react-hook-form";
-import useSWR, { mutate } from "swr";
+import { mutate } from "swr";
 
 interface Props {
   listId: string;
@@ -27,24 +27,23 @@ const AddEmailModal: React.FC<Props> = ({ children, listId }) => {
   const toast = useToast();
   const { handleSubmit, register } = useForm();
   const { user } = useUser();
-  const { data } = useSWR("/api/list");
 
   const onCreate = async ({ addresses }) => {
-    const newEmail = { addresses, listId };
-    const { data } = await axios.post("/api/email", newEmail);
-    toast({
-      title: "Success!",
-      description: "Emails added successfully",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
-    // mutate(
-    //   ["/api/lists", user.id],
-    //   async (data) => ({ sites: [{ id, ...newSite }, ...data.sites] }),
-    //   false
-    // );
-    onClose();
+    try {
+      const newEmail = { addresses, listId };
+      await axios.post("/api/email", newEmail);
+      toast({
+        title: "Success!",
+        description: "Emails added successfully",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      mutate(["/api/list", user?.id]);
+      onClose();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
