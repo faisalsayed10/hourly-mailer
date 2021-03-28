@@ -22,11 +22,11 @@ export default withSession(
       case "POST":
         const { name } = req.body;
 
-        await prisma.list.create({
+        const list = await prisma.list.create({
           data: { name, userId: id },
         });
 
-        return res.status(200).json({ message: "List created successfully" });
+        return res.status(200).json(list);
       default:
         return res.status(405).end();
     }
