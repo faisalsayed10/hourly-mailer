@@ -1,12 +1,43 @@
-import { List } from '.prisma/client';
-import React from 'react'
-
+import { Box } from "@chakra-ui/react";
+import { Email } from '@prisma/client';
+import React from 'react';
+import RemoveButton from './RemoveEmailButton';
+import { Table, Td, Th, Tr } from "./Table";
 interface Props {
-  lists: List[]
+  emails: Email[]
+  listId: string;
 }
 
-const ListTable: React.FC<Props> = ({ lists }) => {
-  return <div>{JSON.stringify(lists)}</div>;
+const ListTable: React.FC<Props> = ({ emails, listId }) => {
+    return (
+      // @ts-ignore
+      <Table w="100%">
+        <thead>
+          <Tr>
+            <Th>No.</Th>
+            <Th>Emails</Th>
+            <Th>Status</Th>
+            <Th>Delete</Th>
+          </Tr>
+        </thead>
+        <tbody>
+          {emails.map((email, idx) => (
+            <Box as="tr" key={email.id}>
+              <Td>
+                {idx + 1}.
+              </Td>
+              <Td>
+                {email.address}
+              </Td>
+              <Td>
+                {JSON.stringify(email.response)}
+              </Td>
+              <Td><RemoveButton listId={listId} emailId={email.id} /></Td>
+            </Box>
+          ))}
+        </tbody>
+      </Table>
+    );
 };
 
 export default ListTable

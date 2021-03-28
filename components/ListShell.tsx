@@ -1,8 +1,9 @@
-import React from "react";
-import { Box, Flex, Button } from "@chakra-ui/react";
-import { useUser } from "hooks";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import axios from "axios";
+import { useUser } from "hooks";
 import { useRouter } from "next/router";
+import React from "react";
+import AddListModal from "./AddListModal";
 
 const ListShell: React.FC = ({ children }) => {
   const { user, mutateUser } = useUser();
@@ -10,7 +11,7 @@ const ListShell: React.FC = ({ children }) => {
 
   const logout = async () => {
     await axios.post("/api/logout");
-    mutateUser(null)
+    mutateUser(null);
     router.push("/login");
   };
 
@@ -34,9 +35,12 @@ const ListShell: React.FC = ({ children }) => {
         >
           <Flex alignItems="center" justifyContent="center">
             {user && (
-              <Button variant="ghost" onClick={() => logout()}>
-                Log Out
-              </Button>
+              <>
+                <AddListModal />
+                <Button variant="ghost" onClick={() => logout()}>
+                  Log Out
+                </Button>
+              </>
             )}
           </Flex>
         </Flex>
