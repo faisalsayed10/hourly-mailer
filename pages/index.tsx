@@ -1,19 +1,22 @@
-import { useUser } from "hooks";
+import { Email, List } from ".prisma/client";
+import { Box } from "@chakra-ui/layout";
+import DashboardEmpty from "@components/DashboardEmpty";
 import ListEmptyState from "@components/ListEmptyState";
-import ListTableSkeleton from "@components/ListTableSkeleton";
 import ListShell from "@components/ListShell";
-import useSWR from "swr";
 import ListTable from "@components/ListTable";
 import ListTableHeader from "@components/ListTableHeader";
+import ListTableSkeleton from "@components/ListTableSkeleton";
+import { useUser } from "hooks";
+import React from "react";
+import useSWR from "swr";
 
 const Home: React.FC = () => {
   const { user } = useUser("/login", false);
-  const { data: lists } = useSWR(user ? ["/api/list", user?.id] : null);
+  const { data: lists } = useSWR<List[]>(user ? ["/api/list", user?.id] : null);
 
   if (!lists) {
     return (
       <ListShell>
-        <ListTableHeader />
         <ListTableSkeleton />
       </ListShell>
     );
@@ -21,14 +24,27 @@ const Home: React.FC = () => {
 
   return (
     <ListShell>
-      <ListTableHeader />
-      {lists.length ? (
-        <ListTable lists={lists} />
+      {lists?.length > 0 ? (
+        lists.map((list: List & { emails: Email[] }) => {
+          return (
+            <Box
+              key={list.id}
+              mb="8"
+            >
+              <ListTableHeader name={list.name} listId={list.id} />
+              {list.emails?.length ? (
+                <ListTable listId={list.id} emails={list.emails} />
+              ) : (
+                <ListEmptyState listId={list.id} />
+              )}
+            </Box>
+          );
+        })
       ) : (
-        <ListEmptyState />
+        <DashboardEmpty />
       )}
     </ListShell>
   );
-}
+};
 
 export default Home;
