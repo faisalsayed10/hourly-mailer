@@ -15,6 +15,7 @@ export default withSession(
           where: {
             userId: id,
           },
+          include: { emails: true }
         });
 
         return res.json(lists);
