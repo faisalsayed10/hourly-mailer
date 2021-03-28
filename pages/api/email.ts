@@ -33,8 +33,7 @@ export default withSession(
             (address) => address !== email.address
           );
         });
-
-        console.log(addressArr);
+        
         const data = addressArr.map((address: string) => {
           return { address, response: {}, listId };
         });

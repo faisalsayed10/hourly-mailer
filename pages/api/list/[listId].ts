@@ -30,8 +30,8 @@ export default withSession(
           });
 
           const transaction = await prisma.$transaction([
-            deleteLists,
             deleteListEmails,
+            deleteLists,
           ]);
 
           return res.status(200).json({ message: "List deleted successfully" });
