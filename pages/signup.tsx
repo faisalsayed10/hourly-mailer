@@ -51,7 +51,7 @@ const Signup: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Signup on Safire</title>
+        <title>Signup</title>
       </Head>
       <Box
         className="form-page"
