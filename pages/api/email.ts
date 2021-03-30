@@ -33,8 +33,10 @@ export default withSession(
             (address) => address !== email.address
           );
         });
+
+        const uniqueEmailsArr: string[] = [...new Set(addressArr)]
         
-        const data = addressArr.map((address: string) => {
+        const data = uniqueEmailsArr.map((address: string) => {
           return { address, response: {}, listId };
         });
 
@@ -43,7 +45,7 @@ export default withSession(
           skipDuplicates: true,
         });
 
-        return res.status(200).json({ message: "Email added successfully" });
+        return res.status(200).json({ message: "Emails added successfully" });
       default:
         return res.status(405).end();
     }

@@ -70,7 +70,7 @@ const Signup: React.FC = () => {
           h="70vh"
           w={["auto", "auto", "400px"]}
           m="8"
-          borderRadius="2xl"
+          borderRadius="xl"
         >
           <Box
             display="flex"

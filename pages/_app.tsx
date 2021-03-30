@@ -7,7 +7,7 @@ import fetcher from "@lib/fetcher";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider>
-      <SWRConfig value={{ fetcher, onError: (err) => console.error(err) }}>
+      <SWRConfig value={{ fetcher, onError: (err) => {} }}>
         <Component {...pageProps} />
       </SWRConfig>
     </ChakraProvider>

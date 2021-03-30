@@ -11,7 +11,7 @@ export default async function fetcher(
       return res.data;
     }
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return {};
   }
 }
