@@ -3,6 +3,7 @@ import withSession from "@lib/session";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Session } from "next-iron-session";
 import prisma from "@lib/prisma";
+import { queue } from "@lib/queue";
 
 export default withSession(
   async (req: NextApiRequest & { session: Session }, res: NextApiResponse) => {
@@ -34,8 +35,8 @@ export default withSession(
           );
         });
 
-        const uniqueEmailsArr: string[] = [...new Set(addressArr)]
-        
+        const uniqueEmailsArr: string[] = [...new Set(addressArr)];
+
         const data = uniqueEmailsArr.map((address: string) => {
           return { address, response: {}, listId };
         });
@@ -43,6 +44,10 @@ export default withSession(
         await prisma.email.createMany({
           data: data,
           skipDuplicates: true,
+        });
+
+        uniqueEmailsArr.forEach(async (email) => {
+          await queue.add(email, { email: email });
         });
 
         return res.status(200).json({ message: "Emails added successfully" });
